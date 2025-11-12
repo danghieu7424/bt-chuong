@@ -1,0 +1,103 @@
+/* Import file này vào component, ví dụ: import "./SinhVien.scss"; */
+
+.sinhvien-page {
+  padding: 20px 40px; // Thêm padding ngang
+  max-width: 900px;
+  margin: 2rem auto;
+  font-family: Arial, sans-serif;
+
+  // Sắp xếp "Xin chào" và nút "Đăng xuất"
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+
+    h2 {
+      margin: 0;
+      color: #333;
+    }
+
+    .logout-button {
+      padding: 8px 16px;
+      font-size: 0.9em;
+      color: #fff;
+      background-color: #d9534f; // Màu đỏ cho đăng xuất
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #c9302c;
+      }
+    }
+  }
+
+  h3 {
+    margin-top: 2rem;
+    color: #444;
+  }
+
+  // Các thông báo trạng thái
+  .error-message,
+  .loading-message,
+  .empty-message {
+    text-align: center;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 5px;
+  }
+
+  .error-message {
+    /* Chuyển từ: style={{ color: "red" }} */
+    color: #d93025;
+    background-color: #fbeae9;
+  }
+
+  .loading-message {
+    color: #555;
+  }
+  
+  .empty-message {
+    color: #777;
+    background-color: #f9f9f9;
+  }
+
+  // Bảng điểm
+  .diem-table {
+    /* Chuyển từ: border="1" cellPadding="6" style={{ borderCollapse: "collapse" }} */
+    width: 100%;
+    border-collapse: collapse; // Thuộc tính quan trọng
+    margin-top: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    thead tr {
+      background-color: #f8f8f8;
+      color: #333;
+    }
+
+    th,
+    td {
+      padding: 12px 15px; // Tương tự cellPadding
+      border: 1px solid #e0e0e0; // Tương tự border="1"
+      text-align: left;
+    }
+
+    // Căn giữa cột điểm
+    td:nth-child(2) {
+      text-align: center;
+      font-weight: bold;
+    }
+
+    // Zebra striping cho dễ đọc
+    tbody tr:nth-child(even) {
+      background-color: #fdfdfd;
+    }
+
+    tbody tr:hover {
+      background-color: #f5f5f5;
+    }
+  }
+}

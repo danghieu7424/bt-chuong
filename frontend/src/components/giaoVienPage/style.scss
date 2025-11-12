@@ -1,0 +1,176 @@
+/* style.scss */
+
+.giaovien-page {
+  padding: 20px 40px;
+  max-width: 900px;
+  margin: 2rem auto;
+  font-family: Arial, sans-serif;
+
+  // Header (Tái sử dụng từ SinhVien.scss)
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+
+    h2 {
+      margin: 0;
+      color: #333;
+    }
+
+    .logout-button {
+      padding: 8px 16px;
+      font-size: 0.9em;
+      color: #fff;
+      background-color: #d9534f;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #c9302c;
+      }
+    }
+  }
+
+  // Tiêu đề cho các phần
+  h3 {
+    margin-top: 2rem;
+    color: #444;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+  }
+
+  // Phần Form tạo đề thi
+  .form-section {
+    .form-content {
+      display: flex;
+      flex-direction: column;
+      gap: 12px; // Khoảng cách giữa các phần tử
+      max-width: 500px; // Giới hạn chiều rộng form
+
+      input[type="text"],
+      textarea {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+
+        &:focus {
+          border-color: #007bff;
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+      }
+
+      textarea {
+        min-height: 80px; // Chiều cao tối thiểu cho mô tả
+        resize: vertical; // Cho phép thay đổi chiều cao
+      }
+
+      button {
+        padding: 10px 15px;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #fff;
+        background-color: #28a745; // Màu xanh lá
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        align-self: flex-start; // Nút không chiếm 100%
+
+        &:hover {
+          background-color: #218838;
+        }
+
+        &:disabled {
+          background-color: #9de3a1; // Màu nhạt khi disable
+          cursor: wait;
+        }
+      }
+    }
+
+    // Thông báo cho Form
+    .form-message {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 0.9em;
+
+      &.success {
+        color: #155724;
+        background-color: #d4edda;
+      }
+      &.error {
+        color: #721c24;
+        background-color: #f8d7da;
+      }
+    }
+  }
+
+  // Phần Bảng điểm
+  .diemlop-section {
+    // Thông báo trạng thái (Tái sử dụng)
+    .error-message,
+    .loading-message,
+    .empty-message {
+      text-align: center;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 5px;
+    }
+
+    .error-message {
+      color: #d93025;
+      background-color: #fbeae9;
+    }
+
+    .loading-message {
+      color: #555;
+    }
+    
+    .empty-message {
+      color: #777;
+      background-color: #f9f9f9;
+    }
+
+    // Bảng điểm (Tái sử dụng)
+    .diem-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+      thead tr {
+        background-color: #f8f8f8;
+        color: #333;
+      }
+
+      th,
+      td {
+        padding: 12px 15px;
+        border: 1px solid #e0e0e0;
+        text-align: left;
+      }
+
+      // Căn giữa cột điểm
+      td:nth-child(3) {
+        text-align: center;
+        font-weight: bold;
+      }
+
+      tbody tr:nth-child(even) {
+        background-color: #fdfdfd;
+      }
+
+      tbody tr:hover {
+        background-color: #f5f5f5;
+      }
+    }
+  }
+}

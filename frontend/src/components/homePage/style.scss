@@ -1,0 +1,75 @@
+/* Thêm vào file style.scss của bạn */
+
+.home-page {
+  padding: 40px;
+  max-width: 800px;
+  margin: 4rem auto; // Đẩy ra giữa
+  text-align: center; // Căn giữa toàn bộ nội dung
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  h1 {
+    margin-top: 0;
+    color: #333;
+    font-size: 2.2rem;
+  }
+
+  h3 {
+    color: #555;
+    font-weight: 400; // Chữ mỏng hơn
+    margin-bottom: 0;
+  }
+
+  // Container cho các nút vai trò (sinhvien, giaovien, admin)
+  .role-actions {
+    /* Chuyển từ: style={{ marginTop: 40 }} */
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column; // Xếp các nút theo chiều dọc
+    align-items: center; // Căn giữa các nút
+    gap: 15px; // Khoảng cách giữa các nút
+  }
+
+  // Container cho nút đăng xuất
+  .logout-section {
+    /* Chuyển từ: style={{ marginTop: 50 }} */
+    margin-top: 50px;
+    border-top: 1px solid #f0f0f0; // Thêm đường kẻ mờ
+    padding-top: 30px;
+  }
+
+  // Class .btn - Chuyển từ đối tượng 'btn'
+  .btn {
+    /* Chuyển từ: const btn = { ... } */
+    padding: 12px 24px; // Tăng padding
+    margin: 0; // Bỏ margin (vì đã dùng 'gap' ở trên)
+    border: none;
+    background: #3498db;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    min-width: 300px; // Đặt chiều rộng tối thiểu cho các nút đồng đều
+    transition: background-color 0.2s ease, transform 0.1s ease;
+
+    &:hover {
+      background: #2980b9;
+      transform: translateY(-2px); // Hiệu ứng nhấc lên
+    }
+  }
+
+  // Class .btn-logout (modifier)
+  .btn-logout {
+    /* Chuyển từ: style={{ ...btn, background: "#e74c3c" }} */
+    background: #e74c3c; // Màu đỏ
+    min-width: auto; // Nút logout không cần rộng
+    padding: 10px 20px;
+
+    &:hover {
+      background: #c0392b; // Màu đỏ đậm hơn
+    }
+  }
+}
