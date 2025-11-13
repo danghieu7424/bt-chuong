@@ -1,64 +1,104 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import "./style.scss"
-import LoadingSpinner from "../base/LoadingSpinner"
-import Modal from "../base/Modal"
-import convertScore from "../utils/gradeConverter"
+import React, { useState, useEffect } from "react";
+import "./style.scss";
+import LoadingSpinner from "../base/LoadingSpinner";
+import Modal from "../base/Modal";
+import ProfileEditor from "../common/ProfileEditor"; // nhớ import đúng path
+import { useStore } from "../../store";
 
 export default function AdminUserManagement() {
+  const [state] = useStore();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState(null);
 
-  const loadUsers = () => {
-    setLoading(true);
-    fakeApi.getAllUsers().then(data => {
+  // ✅ load dữ liệu thật từ backend
+  const loadUsers = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${state.domain}/api/admin/users`, {
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Không thể tải danh sách người dùng");
+      const data = await res.json();
       setUsers(data);
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    } finally {
       setLoading(false);
-    });
+    }
   };
 
   useEffect(() => {
     loadUsers();
   }, []);
-  
+
+  // ✅ Gửi request cập nhật người dùng
   const handleUpdate = async (profile) => {
-    await fakeApi.updateProfile(editingUser.id, profile);
-    setEditingUser(null);
-    loadUsers();
+    try {
+      const res = await fetch(`${state.domain}/api/admin/users/${editingUser.id}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: profile.fullName,
+          email: profile.email,
+          role: profile.role,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Không thể cập nhật người dùng");
+      }
+
+      alert("Cập nhật thành công");
+      setEditingUser(null);
+      loadUsers();
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
   };
 
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="overflow-x-auto">
-      <h3 className="text-2xl font-semibold mb-4">Quản lý người dùng</h3>
-      <table className="min-w-full bg-white rounded-lg shadow">
-        <thead className="bg-gray-100">
+    <div className="user-management">
+      <h3 className="title">Quản lý người dùng</h3>
+      <table className="table">
+        <thead>
           <tr>
-            <th className="p-3 text-left">Họ tên</th>
-            <th className="p-3 text-left">Username</th>
-            <th className="p-3 text-left">Vai trò</th>
-            <th className="p-3 text-center">Hành động</th>
+            <th>Họ tên</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Vai trò</th>
+            <th className="text-center">Hành động</th>
           </tr>
         </thead>
         <tbody>
-          {users.map(user => (
-            <tr key={user.id} className="border-b hover:bg-gray-50">
-              <td className="p-3 font-medium">{user.fullName}</td>
-              <td className="p-3">{user.username}</td>
-              <td className="p-3">
-                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                   user.role === 'admin' ? 'bg-red-100 text-red-800' :
-                   user.role === 'teacher' ? 'bg-blue-100 text-blue-800' :
-                   'bg-green-100 text-green-800'
-                 }`}>
-                   {user.role}
-                 </span>
+          {users.map((user) => (
+            <tr key={user.id}>
+              <td>{user.full_name}</td>
+              <td>{user.username}</td>
+              <td>{user.email}</td>
+              <td>
+                <span
+                  className={`role-badge ${
+                    user.role === "admin"
+                      ? "role-admin"
+                      : user.role === "teacher"
+                      ? "role-teacher"
+                      : "role-student"
+                  }`}
+                >
+                  {user.role}
+                </span>
               </td>
-              <td className="p-3 text-center">
+              <td className="text-center">
                 <button
                   onClick={() => setEditingUser(user)}
-                  className="text-blue-600 hover:underline"
+                  className="btn-edit"
                 >
                   Sửa
                 </button>
@@ -67,13 +107,16 @@ export default function AdminUserManagement() {
           ))}
         </tbody>
       </table>
-      
+
       {editingUser && (
-        <Modal title={`Sửa thông tin: ${editingUser.fullName}`} onClose={() => setEditingUser(null)}>
+        <Modal
+          title={`Sửa thông tin: ${editingUser.full_name}`}
+          onClose={() => setEditingUser(null)}
+        >
           <ProfileEditor
             user={editingUser}
             onSave={handleUpdate}
-            isAdmin={true} // Cho phép Admin sửa vai trò
+            isAdmin={true}
           />
         </Modal>
       )}

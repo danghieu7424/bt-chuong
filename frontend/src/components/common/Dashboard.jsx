@@ -4,6 +4,17 @@ import LoadingSpinner from "../base/LoadingSpinner"
 import Modal from "../base/Modal"
 import convertScore from "../utils/gradeConverter"
 
+// component
+import StudentGrades from "../student/StudentGrades";
+import StudentExams from "../student/StudentExams";
+import TakeExam from "../student/TakeExam";
+import TeacherClassGrades from "../teacher/TeacherClassGrades";
+import TeacherFailingStudents from "../teacher/TeacherFailingStudents";
+import TeacherExamManager from "../teacher/TeacherExamManager";
+import AdminUserManagement from "../admin/AdminUserManagement";
+import AdminExamApproval from "../admin/AdminExamApproval";
+import ProfileEditor from "./ProfileEditor"
+
 export default function Dashboard({ user, onLogout }) {
   const [page, setPage] = useState('home'); // 'home', 'profile', 'take_exam'
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -68,61 +79,49 @@ export default function Dashboard({ user, onLogout }) {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+     <div className="dashboard">
       {/* Sidebar */}
-      <div className="w-64 bg-white shadow-md flex flex-col">
-        <div className="p-4 border-b">
-          <h2 className="text-xl font-bold text-blue-600">Hệ thống Thi cử</h2>
+      <aside className="sidebar">
+        <div className="sidebar-header">
+          <h2>Hệ thống Thi cử</h2>
         </div>
-        <nav className="flex-1 p-4 space-y-2">
-          {navItems[currentUser.role].map(item => (
+        <nav className="sidebar-nav">
+          {navItems[currentUser.role].map((item) => (
             <button
               key={item.id}
               onClick={() => setPage(item.id)}
-              className={`w-full text-left px-4 py-2 rounded-lg ${
-                page === item.id 
-                ? 'bg-blue-100 text-blue-700 font-semibold' 
-                : 'text-gray-700 hover:bg-gray-100'
-              }`}
+              className={`nav-item ${page === item.id ? "active" : ""}`}
             >
               {item.name}
             </button>
           ))}
         </nav>
-        <div className="p-4 border-t">
-          <button
-            onClick={() => setShowProfileModal(true)}
-            className="w-full text-left text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg"
-          >
+        <div className="sidebar-footer">
+          <button className="btn-profile" onClick={() => setShowProfileModal(true)}>
             Chỉnh sửa thông tin
           </button>
-          <button
-            onClick={onLogout}
-            className="w-full text-left text-red-600 hover:bg-red-50 px-4 py-2 rounded-lg mt-2"
-          >
+          <button className="btn-logout" onClick={onLogout}>
             Đăng xuất
           </button>
         </div>
-      </div>
-      
+      </aside>
+
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        <header className="bg-white shadow-sm p-4 border-b flex justify-end">
-          <div className="text-right">
-            <span className="font-semibold">{currentUser.fullName}</span>
-            <span className="text-sm text-gray-600 block">Vai trò: {currentUser.role}</span>
+      <div className="main">
+        <header className="main-header">
+          <div className="user-info">
+            <span className="user-name">{currentUser.fullName}</span>
+            <span className="user-role">Vai trò: {currentUser.role}</span>
           </div>
         </header>
-        <main className="flex-1 p-6 overflow-y-auto">
-          {renderPage()}
-        </main>
+        <main className="main-content">{renderPage()}</main>
       </div>
-      
+
       {/* Profile Modal */}
       {showProfileModal && (
-         <Modal title="Chỉnh sửa thông tin cá nhân" onClose={() => setShowProfileModal(false)}>
-           <ProfileEditor user={currentUser} onSave={handleProfileUpdate} />
-         </Modal>
+        <Modal title="Chỉnh sửa thông tin cá nhân" onClose={() => setShowProfileModal(false)}>
+          <ProfileEditor user={currentUser} onSave={handleProfileUpdate} />
+        </Modal>
       )}
     </div>
   );

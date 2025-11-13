@@ -1,57 +1,77 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import "./style.scss"
-import LoadingSpinner from "../base/LoadingSpinner"
-import Modal from "../base/Modal"
-import convertScore from "../utils/gradeConverter"
+import React, { useState } from "react";
+import "./style.scss";
+import LoadingSpinner from "../base/LoadingSpinner";
+import {useStore} from "../../store"
 
-export default function ProfileEditor({ user, onSave, isAdmin = false }) {
+export default function ProfileEditor({ user, isAdmin = false, onSaved }) {
+  const [state, dispatch] = useStore()
   const [fullName, setFullName] = useState(user.fullName);
   const [role, setRole] = useState(user.role);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    const updatedProfile = { fullName };
-    if (isAdmin) {
-      updatedProfile.role = role;
+    setError("");
+
+    try {
+      const body = { fullName };
+      if (isAdmin) body.role = role;
+
+      const url = isAdmin
+        ? `/api/admin/users/${user.id}`
+        : `/api/students/profile`;
+
+      const res = await fetch(`${state.domain}${url}`, {
+        method: "PUT",
+        credentials: "include", // gửi cookie JWT
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Lỗi khi cập nhật profile");
+      }
+
+      if (onSaved) onSaved({ ...user, fullName, role });
+      alert("Cập nhật thành công!");
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
     }
-    await onSave(updatedProfile);
-    setSubmitting(false);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className="block font-medium mb-1">Họ tên</label>
+    <form className="profile-editor" onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label>Họ tên</label>
         <input
           type="text"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
-          className="w-full p-2 border rounded-md"
           required
         />
       </div>
+
       {isAdmin && (
-        <div>
-          <label className="block font-medium mb-1">Vai trò</label>
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="w-full p-2 border rounded-md bg-white"
-          >
+        <div className="form-group">
+          <label>Vai trò</label>
+          <select value={role} onChange={(e) => setRole(e.target.value)}>
             <option value="student">Sinh viên</option>
             <option value="teacher">Giáo viên</option>
             <option value="admin">Admin</option>
           </select>
         </div>
       )}
-      <button
-        type="submit"
-        disabled={submitting}
-        className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition disabled:bg-gray-400"
-      >
-        {submitting ? 'Đang lưu...' : 'Lưu thay đổi'}
+
+      {error && <p className="error-message">{error}</p>}
+
+      <button type="submit" className="btn-submit" disabled={submitting}>
+        {submitting ? "Đang lưu..." : "Lưu thay đổi"}
       </button>
     </form>
   );

@@ -1,0 +1,389 @@
+:root {
+  --bg-white: #ffffff;
+  --bg-gray-light: #f9fafb;
+  --text-dark: #111827;
+  --text-gray: #374151;
+  --text-gray-light: #6b7280;
+  --blue: #2563eb;
+  --blue-dark: #1d4ed8;
+  --green: #16a34a;
+  --gray-border: #d1d5db;
+  --gray-hover: #e5e7eb;
+  --gray-disabled: #9ca3af;
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.exam-create-form {
+  max-height: 70vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.5rem;
+
+  .error-msg {
+    color: var(--red);
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    label {
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+
+    input,
+    select,
+    textarea {
+      padding: 0.5rem;
+      border: 1px solid var(--gray-border);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      outline: none;
+      background-color: var(--bg-white);
+
+      &:focus {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+      }
+    }
+
+    textarea {
+      resize: vertical;
+    }
+  }
+
+  .section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    padding-top: 1rem;
+    color: var(--text-dark);
+  }
+
+  .question-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--gray-border);
+    background-color: var(--bg-gray-light);
+
+    .question-label,
+    .answer-label {
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+    }
+
+    input,
+    select,
+    textarea {
+      background-color: var(--bg-white);
+    }
+  }
+
+  .btn-add {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    background-color: var(--gray-hover);
+    color: var(--text-gray);
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: var(--gray-border);
+    }
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    color: var(--bg-white);
+    background-color: var(--blue);
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover:enabled {
+      background-color: var(--blue-dark);
+    }
+
+    &:disabled {
+      background-color: var(--gray-disabled);
+      cursor: not-allowed;
+    }
+  }
+}
+
+
+:root {
+  --bg-white: #ffffff;
+  --bg-gray-light: #f3f4f6;
+  --text-dark: #111827;
+  --text-gray: #374151;
+  --text-gray-light: #6b7280;
+  --blue: #2563eb;
+  --border-gray: #e5e7eb;
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.teacher-class-grades {
+  overflow-x: auto;
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+  }
+
+  .grades-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--bg-white);
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+
+    thead {
+      background-color: var(--bg-gray-light);
+
+      th {
+        padding: 0.75rem 1rem;
+        text-align: center;
+        font-weight: 600;
+        color: var(--text-gray);
+
+        &:first-child,
+        &:nth-child(2) {
+          text-align: left;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid var(--border-gray);
+        transition: background-color 0.2s;
+
+        &:hover {
+          background-color: var(--bg-gray-light);
+        }
+
+        td {
+          padding: 0.75rem 1rem;
+          font-size: 0.95rem;
+          color: var(--text-gray);
+          text-align: center;
+
+          &.student-name,
+          &.subject-name {
+            text-align: left;
+            font-weight: 500;
+            color: var(--text-dark);
+          }
+
+          &.score-10 {
+            font-weight: 600;
+            color: var(--blue);
+          }
+        }
+      }
+    }
+  }
+}
+
+
+:root {
+  --bg-white: #ffffff;
+  --bg-gray-light: #f3f4f6;
+  --text-dark: #111827;
+  --text-gray: #374151;
+  --blue: #2563eb;
+  --blue-dark: #1d4ed8;
+  --green: #16a34a;
+  --yellow: #facc15;
+  --red: #dc2626;
+  --border-gray: #e5e7eb;
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.teacher-exam-manager {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    .title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .btn-create {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      background-color: var(--blue);
+      color: var(--bg-white);
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: var(--blue-dark);
+      }
+    }
+  }
+
+  .exam-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .exam-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border-gray);
+      background-color: var(--bg-white);
+      box-shadow: var(--shadow);
+
+      .exam-name {
+        font-weight: 600;
+        font-size: 1.125rem;
+        color: var(--text-dark);
+      }
+
+      .subject-name {
+        color: var(--text-gray);
+      }
+
+      .status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+
+        &.status-approved {
+          background-color: #d1fae5;
+          color: var(--green);
+        }
+
+        &.status-pending {
+          background-color: #fef3c7;
+          color: var(--yellow);
+        }
+
+        &.status-rejected {
+          background-color: #fee2e2;
+          color: var(--red);
+        }
+
+        &.status-default {
+          background-color: var(--bg-gray-light);
+          color: var(--text-gray);
+        }
+      }
+    }
+  }
+}
+
+
+:root {
+  --bg-white: #ffffff;
+  --bg-gray-light: #f3f4f6;
+  --bg-red-light: #fee2e2;
+  --text-dark: #111827;
+  --text-gray: #374151;
+  --text-red: #dc2626;
+  --border-gray: #e5e7eb;
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.teacher-failing-students {
+  overflow-x: auto;
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+  }
+
+  .no-data {
+    color: var(--text-gray);
+    font-size: 1rem;
+  }
+
+  .grades-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--bg-white);
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+
+    thead {
+      background-color: var(--bg-red-light);
+
+      th {
+        padding: 0.75rem 1rem;
+        text-align: center;
+        font-weight: 600;
+        color: var(--text-dark);
+
+        &:first-child,
+        &:nth-child(2) {
+          text-align: left;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid var(--border-gray);
+        transition: background-color 0.2s;
+
+        &:hover {
+          background-color: var(--bg-gray-light);
+        }
+
+        td {
+          padding: 0.75rem 1rem;
+          font-size: 0.95rem;
+          color: var(--text-gray);
+          text-align: center;
+
+          &.student-name,
+          &.subject-name {
+            text-align: left;
+            font-weight: 500;
+            color: var(--text-dark);
+          }
+
+          &.score {
+            font-weight: 600;
+            color: var(--text-red);
+          }
+        }
+      }
+    }
+  }
+}

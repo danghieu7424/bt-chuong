@@ -55,17 +55,17 @@ router.get("/profile", async (req, res) => {
 // PUT /api/students/profile - Cập nhật thông tin cá nhân (chỉ full_name, email)
 router.put("/profile", async (req, res) => {
   const userId = req.user.userId;
-  const { fullName, email } = req.body;
+  const { fullName } = req.body;
 
-  if (!fullName || !email) {
+  if (!fullName ) {
       return res.status(400).json({ message: "Vui lòng cung cấp đầy đủ thông tin" });
   }
   
   // Sinh viên không được tự ý đổi vai trò hay username
   try {
     await queryDatabase(
-      "UPDATE Users SET full_name = ?, email = ? WHERE id = ?",
-      [fullName, email, userId]
+      "UPDATE Users SET full_name = ? WHERE id = ?",
+      [fullName, userId]
     );
     res.status(200).json({ message: "Cập nhật thông tin thành công" });
   } catch (err) {
@@ -95,6 +95,89 @@ router.get("/exams", async (req, res) => {
     res.status(500).json({ message: "Lỗi server" });
   }
 });
+
+// GET chi tiết bài thi
+router.get("/exam/:id", async (req, res) => {
+  const studentId = req.user.userId;
+  const examId = req.params.id;
+
+  try {
+    // Kiểm tra quyền làm bài
+    const check = await queryDatabase(
+      `SELECT 1 
+       FROM Enrollments en
+       JOIN Exams e ON en.subject_id = e.subject_id
+       WHERE en.student_id = ? AND e.id = ? AND e.status = 'approved'`,
+      [studentId, examId]
+    );
+    if (check.length === 0) return res.status(403).json({ message: "Không có quyền truy cập" });
+
+    // Lấy thông tin exam
+    const exam = await queryDatabase(
+      "SELECT id, name, subject_id, status FROM Exams WHERE id = ?",
+      [examId]
+    );
+    if (exam.length === 0) return res.status(404).json({ message: "Không tìm thấy bài thi" });
+
+    // Lấy câu hỏi
+    const questions = await queryDatabase(
+      "SELECT id, question_text AS text, options FROM Questions WHERE exam_id = ?",
+      [examId]
+    );
+
+    const formattedQuestions = questions.map(q => ({
+      id: q.id,
+      text: q.text,
+      options: JSON.parse(q.options)
+    }));
+
+    res.status(200).json({ exam: exam[0], questions: formattedQuestions });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Lỗi server" });
+  }
+});
+
+// POST nộp bài
+router.post("/exam/:id/submit", async (req, res) => {
+  const studentId = req.user.userId;
+  const examId = req.params.id;
+  const { answers } = req.body; // { questionId: selectedOption }
+
+  try {
+    // Kiểm tra quyền làm bài
+    const check = await queryDatabase(
+      `SELECT 1 
+       FROM Enrollments en
+       JOIN Exams e ON en.subject_id = e.subject_id
+       WHERE en.student_id = ? AND e.id = ? AND e.status = 'approved'`,
+      [studentId, examId]
+    );
+    if (check.length === 0) return res.status(403).json({ message: "Không có quyền truy cập" });
+
+    // Tạo record StudentExams
+    const studentExamId = `se_${Date.now()}`;
+    await queryDatabase(
+      "INSERT INTO StudentExams (id, student_id, exam_id, start_time, is_submitted) VALUES (?, ?, ?, NOW(), TRUE)",
+      [studentExamId, studentId, examId]
+    );
+
+    // Lưu câu trả lời
+    const insertAnswers = Object.entries(answers).map(([questionId, answer]) =>
+      queryDatabase(
+        "INSERT INTO StudentAnswers (id, student_exam_id, question_id, student_answer) VALUES (?, ?, ?, ?)",
+        [`sa_${Date.now()}_${questionId}`, studentExamId, questionId, answer]
+      )
+    );
+    await Promise.all(insertAnswers);
+
+    res.status(200).json({ message: "Nộp bài thành công" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Lỗi server" });
+  }
+});
+
 
 // ... Thêm các route cho việc LÀM BÀI THI (GET /exam/:id, POST /exam/submit) ...
 

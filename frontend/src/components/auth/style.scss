@@ -1,0 +1,145 @@
+:root {
+  --bg-gray: #f3f4f6;
+  --text-gray: #4b5563;
+  --text-dark: #1f2937;
+  --blue: #2563eb;
+  --blue-hover: #1d4ed8;
+  --white: #ffffff;
+  --red-bg: #fee2e2;
+  --red-border: #f87171;
+  --red-text: #b91c1c;
+  --gray-border: #d1d5db;
+  --gray-disabled: #9ca3af;
+}
+
+.login-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--bg-gray);
+}
+
+.login-box {
+  width: 100%;
+  max-width: 420px;
+  background-color: var(--white);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.login-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-dark);
+  margin-bottom: 1.5rem;
+}
+
+.error-box {
+  background-color: var(--red-bg);
+  border: 1px solid var(--red-border);
+  color: var(--red-text);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-gray);
+  }
+
+  input {
+    margin-top: 0.25rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--gray-border);
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    outline: none;
+    font-size: 1rem;
+
+    &:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+  }
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: var(--blue);
+  color: var(--white);
+  font-weight: 600;
+  font-size: 1.125rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--blue-hover);
+  }
+
+  &:disabled {
+    background-color: var(--gray-disabled);
+    cursor: not-allowed;
+  }
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner {
+  height: 1.25rem;
+  width: 1.25rem;
+  animation: spin 1s linear infinite;
+
+  .circle {
+    opacity: 0.25;
+  }
+
+  .path {
+    opacity: 0.75;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.demo-info {
+  margin-top: 1.5rem;
+  text-align: center;
+
+  p {
+    font-size: 0.875rem;
+    color: var(--text-gray);
+    margin-bottom: 0.5rem;
+  }
+
+  ul {
+    font-size: 0.75rem;
+    color: #6b7280;
+    list-style-type: disc;
+    list-style-position: inside;
+    text-align: left;
+    margin: 0 auto;
+    max-width: 250px;
+  }
+}

@@ -1,4 +1,4 @@
-export const convertScore = (score10) => {
+ const convertScore = (score10) => {
   let score4, scoreLetter;
   if (score10 >= 9.0) { score4 = 4.0; scoreLetter = 'A+'; }
   else if (score10 >= 8.5) { score4 = 3.7; scoreLetter = 'A'; }
@@ -10,3 +10,5 @@ export const convertScore = (score10) => {
   else { score4 = 0.0; scoreLetter = 'F'; }
   return { score4: score4.toFixed(1), scoreLetter };
 };
+
+export default convertScore

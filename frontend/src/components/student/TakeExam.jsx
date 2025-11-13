@@ -1,61 +1,101 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import "./style.scss"
-import LoadingSpinner from "../base/LoadingSpinner"
-import Modal from "../base/Modal"
-import convertScore from "../utils/gradeConverter"
+import React, { useState, useEffect } from "react";
+import "./style.scss";
+import LoadingSpinner from "../base/LoadingSpinner";
+import { useStore } from "../../store";
 
 export default function TakeExam({ examId, user, onBack }) {
+  const [state] = useStore();
   const [examData, setExamData] = useState(null);
   const [answers, setAnswers] = useState({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
     setLoading(true);
-    fakeApi.getExamQuestions(examId).then(data => {
-      setExamData(data);
-      setLoading(false);
-    });
-  }, [examId]);
+
+    fetch(`${state.domain}/api/students/exam/${examId}`, {
+      method: "GET",
+      credentials: "include", // gửi cookie để xác thực
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Không tải được bài thi");
+        return res.json();
+      })
+      .then((data) => {
+        if (isMounted) {
+          setExamData(data);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        if (isMounted) setExamData(null);
+        setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [examId, state.domain]);
 
   const handleAnswerChange = (questionId, answer) => {
-    setAnswers(prev => ({ ...prev, [questionId]: answer }));
+    setAnswers((prev) => ({ ...prev, [questionId]: answer }));
   };
 
   const handleSubmit = async () => {
+    if (!examData) return;
     if (Object.keys(answers).length !== examData.questions.length) {
-      alert('Vui lòng trả lời tất cả các câu hỏi.'); // Tạm thời dùng alert, nên thay bằng modal
+      alert("Vui lòng trả lời tất cả các câu hỏi.");
       return;
     }
+
     setSubmitting(true);
-    await fakeApi.submitExam(examId, user.id, answers);
-    setSubmitting(false);
-    alert('Nộp bài thành công!'); // Tạm thời
-    onBack();
+    try {
+      const res = await fetch(`${state.domain}/api/students/exam/${examId}/submit`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ answers }),
+      });
+
+      if (!res.ok) throw new Error("Nộp bài thất bại");
+      alert("Nộp bài thành công!");
+      onBack();
+    } catch (err) {
+      console.error(err);
+      alert("Có lỗi xảy ra khi nộp bài.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (loading) return <LoadingSpinner />;
   if (!examData) return <p>Không tìm thấy bài thi.</p>;
-  
+
   return (
-    <div>
-      <button onClick={onBack} className="mb-4 text-blue-600 hover:underline">&larr; Quay lại danh sách</button>
-      <h2 className="text-3xl font-bold mb-2">{examData.exam.name}</h2>
-      <p className="text-lg text-gray-700 mb-6">Môn: {examData.exam.subjectName}</p>
-      
-      <div className="space-y-6">
+    <div className="take-exam">
+      <button className="back-btn" onClick={onBack}>
+        &larr; Quay lại danh sách
+      </button>
+
+      <h2 className="exam-title">{examData.exam.name}</h2>
+      <p className="exam-subject">Môn: {examData.exam.subject_name}</p>
+
+      <div className="questions-list">
         {examData.questions.map((q, index) => (
-          <div key={q.id} className="bg-white p-4 rounded-lg shadow-sm border">
-            <p className="font-semibold text-lg mb-3">Câu {index + 1}: {q.text}</p>
-            <div className="space-y-2">
+          <div key={q.id} className="question-card">
+            <p className="question-text">
+              Câu {index + 1}: {q.text}
+            </p>
+            <div className="options-list">
               {q.options.map((opt, i) => (
-                <label key={i} className="flex items-center p-2 rounded-md hover:bg-gray-100 cursor-pointer">
+                <label key={i} className="option-label">
                   <input
                     type="radio"
                     name={`question-${q.id}`}
-                    value={opt.split('.')[0]} // Giả sử đáp án là A, B, C...
+                    value={opt.split(".")[0]}
                     onChange={(e) => handleAnswerChange(q.id, e.target.value)}
-                    className="mr-3"
                   />
                   {opt}
                 </label>
@@ -64,13 +104,9 @@ export default function TakeExam({ examId, user, onBack }) {
           </div>
         ))}
       </div>
-      
-      <button
-        onClick={handleSubmit}
-        disabled={submitting}
-        className="mt-8 w-full bg-green-600 text-white px-6 py-3 rounded-lg font-bold text-lg hover:bg-green-700 transition disabled:bg-gray-400"
-      >
-        {submitting ? 'Đang nộp bài...' : 'Nộp bài'}
+
+      <button className="submit-btn" onClick={handleSubmit} disabled={submitting}>
+        {submitting ? "Đang nộp bài..." : "Nộp bài"}
       </button>
     </div>
   );

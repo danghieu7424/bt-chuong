@@ -52,6 +52,25 @@ router.get("/failing-students", async (req, res) => {
   }
 });
 
+// GET /api/teachers/exams - Lấy danh sách đề thi giáo viên đã tạo
+router.get("/exams", async (req, res) => {
+  const teacherId = req.user.userId;
+  try {
+    const exams = await queryDatabase(
+      `SELECT e.id, e.name, e.subject_id, e.status, s.name AS subject_name
+       FROM Exams e
+       JOIN Subjects s ON e.subject_id = s.id
+       WHERE e.creator_id = ?`,
+      [teacherId]
+    );
+    res.status(200).json(exams);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Lỗi server" });
+  }
+});
+
+
 // POST /api/teachers/exams - Tạo tập đề theo môn dạy
 router.post("/exams", async (req, res) => {
   const teacherId = req.user.userId;

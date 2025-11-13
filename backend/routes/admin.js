@@ -25,16 +25,16 @@ router.get("/users", async (req, res) => {
 // PUT /api/admin/users/:id - Admin chỉnh sửa thông tin toàn bộ
 router.put("/users/:id", async (req, res) => {
   const userIdToEdit = req.params.id;
-  const { fullName, email, role } = req.body; // Admin có thể đổi cả vai trò
+  const { fullName, role } = req.body; // Admin có thể đổi cả vai trò
 
-  if (!fullName || !email || !role) {
+  if (!fullName || !role) {
       return res.status(400).json({ message: "Vui lòng cung cấp đầy đủ thông tin" });
   }
 
   try {
     await queryDatabase(
-      "UPDATE Users SET full_name = ?, email = ?, role = ? WHERE id = ?",
-      [fullName, email, role, userIdToEdit]
+      "UPDATE Users SET full_name = ?,  role = ? WHERE id = ?",
+      [fullName, role, userIdToEdit]
     );
     res.status(200).json({ message: "Cập nhật người dùng thành công" });
   } catch (err) {

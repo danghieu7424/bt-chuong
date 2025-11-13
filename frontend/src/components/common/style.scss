@@ -1,0 +1,209 @@
+:root {
+  --bg-gray: #f3f4f6;
+  --bg-white: #ffffff;
+  --text-dark: #111827;
+  --text-gray: #374151;
+  --text-gray-light: #6b7280;
+  --blue: #2563eb;
+  --blue-dark: #1d4ed8;
+  --red: #dc2626;
+  --red-light: #fef2f2;
+  --border-gray: #e5e7eb;
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard {
+  display: flex;
+  height: 100vh;
+  background-color: var(--bg-gray);
+
+  .sidebar {
+    width: 16rem;
+    background-color: var(--bg-white);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow);
+
+    .sidebar-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-gray);
+
+      h2 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--blue);
+      }
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .nav-item {
+        width: 100%;
+        text-align: left;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        color: var(--text-gray);
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &.active {
+          background-color: var(--blue-light, #dbeafe);
+          color: var(--blue);
+          font-weight: 600;
+        }
+
+        &:hover {
+          background-color: var(--bg-gray);
+        }
+      }
+    }
+
+    .sidebar-footer {
+      padding: 1rem;
+      border-top: 1px solid var(--border-gray);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .btn-profile {
+        background: none;
+        border: none;
+        text-align: left;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        color: var(--text-gray);
+        cursor: pointer;
+        transition: background 0.2s;
+
+        &:hover {
+          background-color: var(--bg-gray);
+        }
+      }
+
+      .btn-logout {
+        background: none;
+        border: none;
+        text-align: left;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        color: var(--red);
+        cursor: pointer;
+        transition: background 0.2s;
+
+        &:hover {
+          background-color: var(--red-light);
+        }
+      }
+    }
+  }
+
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .main-header {
+      background-color: var(--bg-white);
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-gray);
+      display: flex;
+      justify-content: flex-end;
+
+      .user-info {
+        text-align: right;
+
+        .user-name {
+          font-weight: 600;
+          display: block;
+        }
+
+        .user-role {
+          font-size: 0.875rem;
+          color: var(--text-gray-light);
+        }
+      }
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+  }
+}
+
+
+:root {
+  --bg-white: #ffffff;
+  --blue: #2563eb;
+  --blue-dark: #1d4ed8;
+  --gray-border: #d1d5db;
+  --gray-disabled: #9ca3af;
+  --text-dark: #111827;
+}
+
+.profile-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+      color: var(--text-dark);
+    }
+
+    input,
+    select {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--gray-border);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      outline: none;
+      background-color: var(--bg-white);
+
+      &:focus {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+      }
+    }
+
+    select {
+      appearance: none;
+      cursor: pointer;
+    }
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background-color: var(--blue);
+    color: var(--bg-white);
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover:enabled {
+      background-color: var(--blue-dark);
+    }
+
+    &:disabled {
+      background-color: var(--gray-disabled);
+      cursor: not-allowed;
+    }
+  }
+}

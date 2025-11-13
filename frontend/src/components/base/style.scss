@@ -1,0 +1,86 @@
+:root {
+  --bg-white: #ffffff;
+  --bg-black-opacity: rgba(0, 0, 0, 0.5);
+  --text-dark: #111827;
+  --text-gray: #6b7280;
+  --shadow-xl: 0 10px 25px rgba(0, 0, 0, 0.2);
+  --border-radius-lg: 0.75rem;
+  --padding-lg: 1.5rem;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: var(--bg-black-opacity);
+  z-index: 40;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 100%;
+  max-width: 32rem;
+  padding: var(--padding-lg);
+  position: relative;
+  z-index: 50;
+
+  .modal-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    font-size: 1.5rem;
+    color: var(--text-gray);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--text-dark);
+    }
+  }
+
+  .modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+  }
+
+  .modal-body {
+    color: var(--text-dark);
+  }
+}
+
+:root {
+  --spinner-size: 2.5rem; // 40px
+  --spinner-border: 0.25rem; // 4px
+  --spinner-color: #2563eb; // blue-500
+  --spinner-speed: 1s;
+}
+
+.spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2.5rem; // 10 (Tailwind px)
+}
+
+.spinner {
+  width: var(--spinner-size);
+  height: var(--spinner-size);
+  border: var(--spinner-border) solid var(--spinner-color);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin var(--spinner-speed) linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
