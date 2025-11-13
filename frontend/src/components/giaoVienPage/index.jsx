@@ -13,9 +13,20 @@ export default function GiaoVien() {
   const [diemError, setDiemError] = useState("");
 
   // State cho form tạo đề
-  const [form, setForm] = useState({ tieuDe: "", moTa: "" });
+  const [form, setForm] = useState({ tieuDe: "", moTa: "", lop: "" });
   const [formLoading, setFormLoading] = useState(false);
   const [formMsg, setFormMsg] = useState(""); // Tách riêng message cho form
+  const [questionForm, setQuestionForm] = useState({
+    idDeThi: "",
+    noiDung: "",
+    dapAnA: "",
+    dapAnB: "",
+    dapAnC: "",
+    dapAnD: "",
+    dapAnDung: "A",
+  });
+  const [qMsg, setQMsg] = useState("");
+  const [qLoading, setQLoading] = useState(false);
 
   // Lấy điểm của lớp
   const fetchDiemLop = async () => {
@@ -36,6 +47,35 @@ export default function GiaoVien() {
     }
   };
 
+  // tạo câu hỏi
+  const taoCauHoi = async () => {
+    setQLoading(true);
+    setQMsg("");
+    try {
+      const res = await fetch("http://localhost:5000/api/giaovien/cauhoi", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(questionForm),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      setQMsg("✅ Thêm câu hỏi thành công");
+      setQuestionForm({
+        ...questionForm,
+        noiDung: "",
+        dapAnA: "",
+        dapAnB: "",
+        dapAnC: "",
+        dapAnD: "",
+      });
+    } catch (err) {
+      setQMsg(err.message);
+    } finally {
+      setQLoading(false);
+    }
+  };
+
   // Tạo đề thi
   const taoDeThi = async () => {
     setFormLoading(true);
@@ -44,19 +84,20 @@ export default function GiaoVien() {
       const res = await fetch("http://localhost:5000/api/giaovien/dethi", {
         method: "POST",
         credentials: "include",
-        headers: { // <-- SỬA LỖI: Thiếu headers
+        headers: {
+          // <-- SỬA LỖI: Thiếu headers
           "Content-Type": "application/json",
         },
         body: JSON.stringify(form), // <-- SỬA LỖI: Thiếu body
       });
-      
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Tạo đề thi thất bại");
-      
+
       setFormMsg("✅ Tạo đề thi thành công");
-      setForm({ tieuDe: "", moTa: "" }); // Xóa form
+      setForm({ tieuDe: "", moTa: "", lop: "" }); // Xóa form
       // Tùy chọn: fetch lại danh sách đề thi (nếu có)
-      // fetchDeThi(); 
+      // fetchDeThi();
     } catch (err) {
       setFormMsg(err.message);
     } finally {
@@ -88,9 +129,11 @@ export default function GiaoVien() {
 
   // Hàm render bảng điểm (để giữ JSX gọn gàng)
   const renderDiemLopTable = () => {
-    if (diemLoading) return <p className="loading-message">Đang tải điểm lớp...</p>;
+    if (diemLoading)
+      return <p className="loading-message">Đang tải điểm lớp...</p>;
     if (diemError) return <p className="error-message">{diemError}</p>;
-    if (diemLop.length === 0) return <p className="empty-message">Chưa có điểm nào.</p>;
+    if (diemLop.length === 0)
+      return <p className="empty-message">Chưa có điểm nào.</p>;
 
     return (
       <table className="diem-table">
@@ -104,7 +147,8 @@ export default function GiaoVien() {
         </thead>
         <tbody>
           {diemLop.map((d, i) => (
-            <tr key={i}> {/* Nên dùng key={d.id} nếu có */}
+            <tr key={i}>
+              {/* Nên dùng key={d.id} nếu có */}
               <td>{d.lop}</td>
               <td>{d.hoTen}</td>
               <td>{d.diem}</td>
@@ -125,19 +169,23 @@ export default function GiaoVien() {
           Đăng xuất
         </button>
       </div>
-
-      {/* Phần tạo đề thi */}
       <div className="form-section">
         <h3>Tạo đề thi mới</h3>
         <div className="form-content">
           <input
-            type="text" // Thêm type="text"
+            type="text"
             placeholder="Tiêu đề"
             value={form.tieuDe}
             onChange={(e) => setForm({ ...form, tieuDe: e.target.value })}
             disabled={formLoading}
           />
-          {/* Dùng textarea cho mô tả */}
+          <input
+            type="text"
+            placeholder="Lớp (VD: CNTT1, KTPM2...)"
+            value={form.lop}
+            onChange={(e) => setForm({ ...form, lop: e.target.value })}
+            disabled={formLoading}
+          />
           <textarea
             placeholder="Mô tả"
             value={form.moTa}
@@ -148,10 +196,97 @@ export default function GiaoVien() {
             {formLoading ? "Đang tạo..." : "Tạo"}
           </button>
         </div>
-        {/* Phân lớp message thành công/lỗi */}
         {formMsg && (
-          <p className={`form-message ${formMsg.startsWith('✅') ? 'success' : 'error'}`}>
+          <p
+            className={`form-message ${
+              formMsg.startsWith("✅") ? "success" : "error"
+            }`}
+          >
             {formMsg}
+          </p>
+        )}
+      </div>
+      <div className="form-section">
+        <h3>Thêm câu hỏi vào đề thi</h3>
+        <div className="form-content">
+          <input
+            type="number"
+            placeholder="ID đề thi"
+            value={questionForm.idDeThi}
+            onChange={(e) =>
+              setQuestionForm({ ...questionForm, idDeThi: e.target.value })
+            }
+            disabled={qLoading}
+          />
+          <textarea
+            placeholder="Nội dung câu hỏi"
+            value={questionForm.noiDung}
+            onChange={(e) =>
+              setQuestionForm({ ...questionForm, noiDung: e.target.value })
+            }
+            disabled={qLoading}
+          />
+          <input
+            type="text"
+            placeholder="Đáp án A"
+            value={questionForm.dapAnA}
+            onChange={(e) =>
+              setQuestionForm({ ...questionForm, dapAnA: e.target.value })
+            }
+            disabled={qLoading}
+          />
+          <input
+            type="text"
+            placeholder="Đáp án B"
+            value={questionForm.dapAnB}
+            onChange={(e) =>
+              setQuestionForm({ ...questionForm, dapAnB: e.target.value })
+            }
+            disabled={qLoading}
+          />
+          <input
+            type="text"
+            placeholder="Đáp án C"
+            value={questionForm.dapAnC}
+            onChange={(e) =>
+              setQuestionForm({ ...questionForm, dapAnC: e.target.value })
+            }
+            disabled={qLoading}
+          />
+          <input
+            type="text"
+            placeholder="Đáp án D"
+            value={questionForm.dapAnD}
+            onChange={(e) =>
+              setQuestionForm({ ...questionForm, dapAnD: e.target.value })
+            }
+            disabled={qLoading}
+          />
+
+          <select
+            value={questionForm.dapAnDung}
+            onChange={(e) =>
+              setQuestionForm({ ...questionForm, dapAnDung: e.target.value })
+            }
+            disabled={qLoading}
+          >
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+          </select>
+
+          <button onClick={taoCauHoi} disabled={qLoading}>
+            {qLoading ? "Đang thêm..." : "Thêm câu hỏi"}
+          </button>
+        </div>
+        {qMsg && (
+          <p
+            className={`form-message ${
+              qMsg.startsWith("✅") ? "success" : "error"
+            }`}
+          >
+            {qMsg}
           </p>
         )}
       </div>
