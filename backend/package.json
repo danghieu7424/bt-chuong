@@ -30,6 +30,6 @@
     "@suid": "utils/suid",
     "@dateVN": "utils/dateVN",
     "@mySQLConfig": "utils/mySQLConfig",
-    "@auth": "utils/middleware/authMiddleware.js"
+    "@auth": "utils/middleware/auth.js"
   }
 }

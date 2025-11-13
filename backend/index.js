@@ -7,13 +7,6 @@ const path = require("path");
 const fs = require("fs");
 const cookieParser = require("cookie-parser");
 
-// gọi file trong router
-const auth = require("./routers/auth");
-const giaoVien = require("./routers/giaoVien");
-const sinhVien = require("./routers/sinhVien");
-const admin = require("./routers/admin");
-const changePassword = require("./routers/changePassword");
-
 // ====================
 // Khai báo app
 // ====================
@@ -31,60 +24,29 @@ app.use(
   })
 );
 
-// --------- routers ---------
+// Import các routers
+const authRoutes = require('./routes/auth');
+const studentRoutes = require('./routes/students');
+const teacherRoutes = require('./routes/teachers');
+const adminRoutes = require('./routes/admin');
 
-app.use("/api/auth", auth);
-app.use("/api/giaoVien", giaoVien);
-app.use("/api/sinhVien", sinhVien);
-app.use("/api/admin", admin);
-app.use("/api/changePassword", changePassword);
+// Định tuyến API
+app.use('/api/auth', authRoutes);
+app.use('/api/students', studentRoutes);
+app.use('/api/teachers', teacherRoutes);
+app.use('/api/admin', adminRoutes);
 
-// --------- page ---------
-app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/storages", express.static(path.join(__dirname, "storages")));
-app.use(
-  "/storages",
-  express.static(path.join(__dirname, "storages"), {
-    maxAge: "1d", // cache 1 ngày
-    etag: true,   // bật ETag để client chỉ tải lại nếu file đổi
-    lastModified: true,
-    immutable: false, // nếu bạn muốn file đổi thì reload
-  })
-);
-app.use("/storages", (req, res) => {
-  // Lấy đường dẫn sau /storages/
-  const relPath = req.path.replace(/^\//, ""); // bỏ dấu / đầu
-  const exts = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
-  const filename = path.basename(relPath);
-  const dirPath = path.join(__dirname, "storages", path.dirname(relPath));
-
-  for (const ext of exts) {
-    const filePath = path.join(dirPath, `${filename}${ext}`);
-    if (fs.existsSync(filePath)) {
-      return res.sendFile(filePath);
-    }
-  }
-
-  return res.status(404).send("File not found");
+// Route cơ bản
+app.get('/', (req, res) => {
+  res.send('Chào mừng đến với API Hệ thống Quản lý Thi!');
 });
 
-
-// ====================
-// SPA routes hợp lệ
-// ====================
-const spaRoutes = ["/", "/auth", "/product-manager"];
-
-app.get(spaRoutes, (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+// Xử lý lỗi chung
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Đã có lỗi xảy ra trên server' });
 });
 
-// ====================
-// Các route còn lại → 404.html
-// ====================
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, "public", "404.html"));
-});
 
 // ====================
 // Khởi động server

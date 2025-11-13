@@ -3,14 +3,16 @@ import { Route, Switch, useLocation } from "react-router-dom";
 import { LoaderPage } from "./components/base/LoaderForm.jsx";
 import { useStore } from "./store";
 
+import _404_ from "./access/404.html"
+
 // ------------ Components ---------------
 import Header from "./components/headerPage";
 import HomePage from "./components/homePage";
-import AuthPage from "./components/loginPage";
+// import AuthPage from "./components/loginPage";
 
-import SinhVien from "./components/sinhVienPage";
-import GiaoVien from "./components/giaoVienPage";
-import AdminPage from "./components/adminPage";
+// import SinhVien from "./components/sinhVienPage";
+// import GiaoVien from "./components/giaoVienPage";
+// import AdminPage from "./components/adminPage";
 
 // ---------------------------------------
 
@@ -26,11 +28,11 @@ function MainContent() {
       <div className="page-container">
         <Switch>
           <Route exact path="/" component={HomePage} />
-          <Route exact path="/login" component={AuthPage} />
+          {/* <Route exact path="/login" component={AuthPage} />
           <Route path="/sinhvien" component={SinhVien} />
           <Route path="/giaovien" component={GiaoVien} />
-          <Route path="/admin" component={AdminPage} />
-          <Route path="*" component={() => <div>404 Not Found</div>} /> 
+          <Route path="/admin" component={AdminPage} /> */}
+          <Route path="*" component={_404_} /> 
         </Switch>
       </div>
     </>

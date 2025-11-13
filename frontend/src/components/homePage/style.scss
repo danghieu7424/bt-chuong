@@ -1,75 +1,298 @@
-/* Thêm vào file style.scss của bạn */
+/* Đây là tệp SCSS bạn đã yêu cầu.
+   Lưu ý: Bản demo React bên trên sử dụng Tailwind CSS để hiển thị ngay lập tức.
+   Bạn có thể sử dụng tệp này để style ứng dụng React của mình
+   nếu bạn thiết lập một trình biên dịch SCSS (như SASS hoặc node-sass).
+*/
 
-.home-page {
-  padding: 40px;
-  max-width: 800px;
-  margin: 4rem auto; // Đẩy ra giữa
-  text-align: center; // Căn giữa toàn bộ nội dung
-  background: #ffffff;
+@use "sass:color";
+
+// Biến
+$primary-color: #007bff;
+$secondary-color: #6c757d;
+$background-color: #f8f9fa;
+$text-color: #333;
+$border-color: #dee2e6;
+$success-color: #28a745;
+$danger-color: #dc3545;
+$warning-color: #ffc107;
+
+// Mixin
+@mixin card-style {
+  background-color: #fff;
+  border: 1px solid $border-color;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+}
 
-  h1 {
-    margin-top: 0;
-    color: #333;
-    font-size: 2.2rem;
+@mixin button-style($bg: $primary-color, $color: #fff) {
+  display: inline-block;
+  padding: 10px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: $color;
+  background-color: $bg;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: color.adjust($bg, $lightness: -10%);
   }
 
-  h3 {
-    color: #555;
-    font-weight: 400; // Chữ mỏng hơn
-    margin-bottom: 0;
+  &:disabled {
+    background-color: $secondary-color;
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+// Chung
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: $background-color;
+  color: $text-color;
+  margin: 0;
+}
+
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+// Trang đăng nhập
+.login-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+
+  .login-card {
+    @include card-style;
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 24px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-group {
+      text-align: left;
+      
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+        border: 1px solid $border-color;
+        border-radius: 6px;
+        box-sizing: border-box;
+      }
+    }
+    
+    .login-button {
+        @include button-style($primary-color);
+        margin-top: 8px;
+        font-size: 1.1rem;
+    }
+    
+    .error-message {
+        background-color: color.adjust($danger-color, $lightness: 35%);
+        color: $danger-color;
+        border: 1px solid $danger-color;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 16px;
+    }
+  }
+}
+
+// Dashboard Layout
+.sidebar {
+  width: 260px;
+  background-color: #fff;
+  border-right: 1px solid $border-color;
+  display: flex;
+  flex-direction: column;
+
+  .sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid $border-color;
+    h2 {
+      margin: 0;
+      color: $primary-color;
+    }
   }
 
-  // Container cho các nút vai trò (sinhvien, giaovien, admin)
-  .role-actions {
-    /* Chuyển từ: style={{ marginTop: 40 }} */
-    margin-top: 40px;
+  nav {
+    flex-grow: 1;
+    padding: 16px;
     display: flex;
-    flex-direction: column; // Xếp các nút theo chiều dọc
-    align-items: center; // Căn giữa các nút
-    gap: 15px; // Khoảng cách giữa các nút
+    flex-direction: column;
+    gap: 8px;
+
+    .nav-button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 12px 16px;
+        font-size: 1rem;
+        font-weight: 500;
+        border: none;
+        background-color: transparent;
+        border-radius: 6px;
+        cursor: pointer;
+        color: $text-color;
+
+        &:hover {
+            background-color: #f1f1f1;
+        }
+
+        &.active {
+            background-color: color.adjust($primary-color, $lightness: 35%);
+            color: $primary-color;
+            font-weight: 600;
+        }
+    }
   }
-
-  // Container cho nút đăng xuất
-  .logout-section {
-    /* Chuyển từ: style={{ marginTop: 50 }} */
-    margin-top: 50px;
-    border-top: 1px solid #f0f0f0; // Thêm đường kẻ mờ
-    padding-top: 30px;
+  
+  .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid $border-color;
+      button {
+          @include button-style(transparent, $text-color);
+          width: 100%;
+          text-align: left;
+          padding: 10px 16px;
+          &:hover { background-color: #f1f1f1; }
+          &.logout-button {
+              color: $danger-color;
+              &:hover { background-color: color.adjust($danger-color, $lightness: 38%); }
+          }
+      }
   }
+}
 
-  // Class .btn - Chuyển từ đối tượng 'btn'
-  .btn {
-    /* Chuyển từ: const btn = { ... } */
-    padding: 12px 24px; // Tăng padding
-    margin: 0; // Bỏ margin (vì đã dùng 'gap' ở trên)
-    border: none;
-    background: #3498db;
-    color: #fff;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    text-decoration: none;
-    min-width: 300px; // Đặt chiều rộng tối thiểu cho các nút đồng đều
-    transition: background-color 0.2s ease, transform 0.1s ease;
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 
-    &:hover {
-      background: #2980b9;
-      transform: translateY(-2px); // Hiệu ứng nhấc lên
+  header {
+    background-color: #fff;
+    border-bottom: 1px solid $border-color;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    .user-info {
+      text-align: right;
+      .user-name {
+        font-weight: 600;
+      }
+      .user-role {
+        font-size: 0.9rem;
+        color: $secondary-color;
+      }
     }
   }
 
-  // Class .btn-logout (modifier)
-  .btn-logout {
-    /* Chuyển từ: style={{ ...btn, background: "#e74c3c" }} */
-    background: #e74c3c; // Màu đỏ
-    min-width: auto; // Nút logout không cần rộng
-    padding: 10px 20px;
-
-    &:hover {
-      background: #c0392b; // Màu đỏ đậm hơn
-    }
+  main {
+    flex-grow: 1;
+    padding: 24px;
+    overflow-y: auto;
   }
+}
+
+// Bảng biểu
+table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    @include card-style;
+    padding: 0;
+
+    thead {
+        background-color: #f9f9f9;
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 2px solid $border-color;
+        }
+    }
+    
+    tbody {
+        tr {
+            border-bottom: 1px solid $border-color;
+            &:last-child {
+                border-bottom: none;
+            }
+            &:hover {
+                background-color: #fcfcfc;
+            }
+        }
+        td {
+            padding: 12px 16px;
+            vertical-align: middle;
+        }
+    }
+}
+
+// Modal
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+
+    .modal-content {
+        @include card-style;
+        width: 100%;
+        max-width: 600px;
+        position: relative;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid $border-color;
+
+            h2 { margin: 0; }
+
+            .close-button {
+                font-size: 1.8rem;
+                font-weight: 300;
+                border: none;
+                background: transparent;
+                cursor: pointer;
+            }
+        }
+
+        .modal-body {
+            padding-top: 16px;
+            overflow-y: auto;
+        }
+    }
 }

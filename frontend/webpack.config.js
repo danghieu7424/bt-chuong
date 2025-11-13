@@ -26,7 +26,7 @@ module.exports = {
             },
             {
                 test: /\.(css|scss)$/, // Sử dụng style-loader, css-loader cho file .css
-                use: ["style-loader", "css-loader", "sass-loader"],
+                use: ["style-loader", "css-loader", "postcss-loader", "sass-loader"],
             },
             {
                 test: /\.(jpg|jpeg|png|gif|svg|webp)$/i, // Để xử lý hình ảnh
