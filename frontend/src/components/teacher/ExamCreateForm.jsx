@@ -151,10 +151,10 @@ export default function ExamCreateForm({ teacherId, subjects, onSuccess }) {
         </div>
       ))}
 
-      <button type="button" onClick={addQuestion}>
+      <button type="button" className="btn-add" onClick={addQuestion}>
         + Thêm câu hỏi
       </button>
-      <button type="submit" disabled={submitting}>
+      <button type="submit" className="btn-submit" disabled={submitting}>
         {submitting ? "Đang lưu..." : "Gửi đi chờ duyệt"}
       </button>
     </form>

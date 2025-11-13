@@ -22,6 +22,7 @@ export default function StudentExams({ user, onTakeExam }) {
       })
       .then((data) => {
         if (isMounted) {
+          console.log(data)
           setExams(Array.isArray(data) ? data : []);
           setLoading(false);
         }

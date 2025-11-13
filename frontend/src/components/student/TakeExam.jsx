@@ -10,13 +10,16 @@ export default function TakeExam({ examId, user, onBack }) {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
+  // Thêm state cho countdown
+  const [timeLeft, setTimeLeft] = useState(0); // giây
+
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
 
     fetch(`${state.domain}/api/students/exam/${examId}`, {
       method: "GET",
-      credentials: "include", // gửi cookie để xác thực
+      credentials: "include",
     })
       .then((res) => {
         if (!res.ok) throw new Error("Không tải được bài thi");
@@ -26,6 +29,10 @@ export default function TakeExam({ examId, user, onBack }) {
         if (isMounted) {
           setExamData(data);
           setLoading(false);
+
+          // Nếu backend cung cấp thời gian làm bài, ví dụ data.exam.duration_minutes
+          // Chuyển sang giây:
+          setTimeLeft((data.exam.duration_minutes || 30) * 60);
         }
       })
       .catch((err) => {
@@ -34,10 +41,25 @@ export default function TakeExam({ examId, user, onBack }) {
         setLoading(false);
       });
 
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, [examId, state.domain]);
+
+  // Countdown timer
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          clearInterval(timer);
+          handleSubmit(); // tự động nộp khi hết giờ
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
 
   const handleAnswerChange = (questionId, answer) => {
     setAnswers((prev) => ({ ...prev, [questionId]: answer }));
@@ -73,6 +95,12 @@ export default function TakeExam({ examId, user, onBack }) {
   if (loading) return <LoadingSpinner />;
   if (!examData) return <p>Không tìm thấy bài thi.</p>;
 
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const s = (seconds % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+  };
+
   return (
     <div className="take-exam">
       <button className="back-btn" onClick={onBack}>
@@ -81,6 +109,7 @@ export default function TakeExam({ examId, user, onBack }) {
 
       <h2 className="exam-title">{examData.exam.name}</h2>
       <p className="exam-subject">Môn: {examData.exam.subject_name}</p>
+      <p className="exam-timer">Thời gian còn lại: {formatTime(timeLeft)}</p>
 
       <div className="questions-list">
         {examData.questions.map((q, index) => (

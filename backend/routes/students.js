@@ -74,27 +74,29 @@ router.put("/profile", async (req, res) => {
   }
 });
 
-// GET /api/students/exams - Lấy danh sách bài thi được phép làm
+// GET /api/students/exams - Lấy danh sách bài thi được phép làm và chưa làm
 router.get("/exams", async (req, res) => {
   const studentId = req.user.userId;
   try {
-    // Lấy các bài thi 'approved' của các môn mà sinh viên này đã đăng ký
     const query = `
       SELECT e.id, e.name, s.name AS subject_name
       FROM Exams e
       JOIN Subjects s ON e.subject_id = s.id
       JOIN Enrollments en ON e.subject_id = en.subject_id
-      WHERE en.student_id = ? AND e.status = 'approved'
-      -- Thêm điều kiện để đảm bảo sinh viên chưa làm bài thi này (nếu cần)
-      -- AND e.id NOT IN (SELECT se.exam_id FROM StudentExams se WHERE se.student_id = ?)
+      LEFT JOIN StudentExams se 
+        ON se.exam_id = e.id AND se.student_id = ?
+      WHERE en.student_id = ? 
+        AND e.status = 'approved'
+        AND se.id IS NULL  -- Chỉ lấy các bài chưa làm
     `;
-    const exams = await queryDatabase(query, [studentId]);
+    const exams = await queryDatabase(query, [studentId, studentId]);
     res.status(200).json(exams);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Lỗi server" });
   }
 });
+
 
 // GET chi tiết bài thi
 router.get("/exam/:id", async (req, res) => {
@@ -117,6 +119,7 @@ router.get("/exam/:id", async (req, res) => {
       "SELECT id, name, subject_id, status FROM Exams WHERE id = ?",
       [examId]
     );
+    
     if (exam.length === 0) return res.status(404).json({ message: "Không tìm thấy bài thi" });
 
     // Lấy câu hỏi
@@ -177,6 +180,8 @@ router.post("/exam/:id/submit", async (req, res) => {
     res.status(500).json({ message: "Lỗi server" });
   }
 });
+
+
 
 
 // ... Thêm các route cho việc LÀM BÀI THI (GET /exam/:id, POST /exam/submit) ...
