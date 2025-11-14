@@ -14,11 +14,13 @@ import TeacherExamManager from "../teacher/TeacherExamManager";
 import AdminUserManagement from "../admin/AdminUserManagement";
 import AdminExamApproval from "../admin/AdminExamApproval";
 import ProfileEditor from "./ProfileEditor"
+import ChangePassword from "./ChangePassword"
 
 export default function Dashboard({ user, onLogout }) {
   const [page, setPage] = useState('home'); // 'home', 'profile', 'take_exam'
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(user);
+  const [showChangePass, setShowChangePass] = useState(false)
   
   const handleProfileUpdate = (updatedUser) => {
     setCurrentUser(updatedUser);
@@ -97,8 +99,12 @@ export default function Dashboard({ user, onLogout }) {
           ))}
         </nav>
         <div className="sidebar-footer">
+          
           <button className="btn-profile" onClick={() => setShowProfileModal(true)}>
             Chỉnh sửa thông tin
+          </button>
+          <button className="btn-profile" onClick={() => setShowChangePass(true)}>
+            Đổi mật khẩu
           </button>
           <button className="btn-logout" onClick={onLogout}>
             Đăng xuất
@@ -117,6 +123,12 @@ export default function Dashboard({ user, onLogout }) {
         <main className="main-content">{renderPage()}</main>
       </div>
 
+      {/* change password Modal */}
+      {showChangePass && (
+        <Modal title="Đổi mật khẩu" onClose={() => setShowChangePass(false)}>
+          <ChangePassword></ChangePassword>
+        </Modal>
+      )}
       {/* Profile Modal */}
       {showProfileModal && (
         <Modal title="Chỉnh sửa thông tin cá nhân" onClose={() => setShowProfileModal(false)}>

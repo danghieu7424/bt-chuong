@@ -1,14 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style.scss";
 import LoadingSpinner from "../base/LoadingSpinner";
-import {useStore} from "../../store"
+import { useStore } from "../../store";
 
-export default function ProfileEditor({ user, isAdmin = false, onSaved }) {
-  const [state, dispatch] = useStore()
+const formatDate = (date) => {
+  if (!date) return "";
+  return new Date(date).toISOString().split("T")[0];
+};
+
+export default function ProfileEditor({user, isAdmin = false, onSaved }) {
+  const [state, dispatch] = useStore();
   const [fullName, setFullName] = useState(user.fullName);
   const [role, setRole] = useState(user.role);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [birthday, setBirthday] = useState(formatDate(user.birthday) || "");
+  const [address, setAddress] = useState(user.address || "");
+  const [className, setClassName] = useState(user.className || "");
+  const [email, setEmail] = useState(user.email || "");
+
+  useEffect(() => {
+    fetch(`${state.domain}/api/students/profile`, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Không thể tải hồ sơ");
+        return res.json();
+      })
+      .then((data) => {
+
+        console.log(data)
+        // Set các field vào state
+        setFullName(data.fullName || "");
+        setRole(data.role || "");
+        setBirthday(formatDate(data.birthday));
+        setAddress(data.address || "");
+        setClassName(data.className || "");
+        setEmail(data.email || "");
+      })
+      .catch((err) => setError(err.message));
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,7 +48,14 @@ export default function ProfileEditor({ user, isAdmin = false, onSaved }) {
     setError("");
 
     try {
-      const body = { fullName };
+      const body = {
+        fullName,
+        birthday,
+        address,
+        className,
+        email,
+      };
+
       if (isAdmin) body.role = role;
 
       const url = isAdmin
@@ -54,6 +93,44 @@ export default function ProfileEditor({ user, isAdmin = false, onSaved }) {
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           required
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Ngày sinh</label>
+        <input
+          type="date"
+          value={birthday}
+          onChange={(e) => setBirthday(e.target.value)}
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Địa chỉ</label>
+        <input
+          type="text"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+        />
+      </div>
+
+      {user.role === "student" && (
+        <div className="form-group">
+          <label>Lớp</label>
+          <input
+            type="text"
+            value={className}
+            onChange={(e) => setClassName(e.target.value)}
+          />
+        </div>
+      )}
+
+      <div className="form-group">
+        <label>Email</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </div>
 

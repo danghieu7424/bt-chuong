@@ -41,7 +41,9 @@ export default function TakeExam({ examId, user, onBack }) {
         setLoading(false);
       });
 
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, [examId, state.domain]);
 
   // Countdown timer
@@ -74,16 +76,20 @@ export default function TakeExam({ examId, user, onBack }) {
 
     setSubmitting(true);
     try {
-      const res = await fetch(`${state.domain}/api/students/exam/${examId}/submit`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answers }),
-      });
+      const res = await fetch(
+        `${state.domain}/api/students/exam/${examId}/submit`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ answers }),
+        }
+      );
 
       if (!res.ok) throw new Error("Nộp bài thất bại");
-      alert("Nộp bài thành công!");
-      onBack();
+      const data = await res.json();
+      alert(`Nộp bài thành công! Điểm của bạn: ${data.score}/10`);
+      onBack(); // trở về danh sách hoặc xem điểm
     } catch (err) {
       console.error(err);
       alert("Có lỗi xảy ra khi nộp bài.");
@@ -96,7 +102,9 @@ export default function TakeExam({ examId, user, onBack }) {
   if (!examData) return <p>Không tìm thấy bài thi.</p>;
 
   const formatTime = (seconds) => {
-    const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const m = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
     const s = (seconds % 60).toString().padStart(2, "0");
     return `${m}:${s}`;
   };
@@ -134,7 +142,11 @@ export default function TakeExam({ examId, user, onBack }) {
         ))}
       </div>
 
-      <button className="submit-btn" onClick={handleSubmit} disabled={submitting}>
+      <button
+        className="submit-btn"
+        onClick={handleSubmit}
+        disabled={submitting}
+      >
         {submitting ? "Đang nộp bài..." : "Nộp bài"}
       </button>
     </div>

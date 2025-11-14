@@ -12,9 +12,10 @@ router.use(requireRole('admin'));
 router.get("/users", async (req, res) => {
   try {
     const users = await queryDatabase(
-      "SELECT id, username, full_name, email, role FROM Users",
+      "SELECT id, username, full_name, email, role, birthday, address, class_name FROM Users",
       []
     );
+   
     res.status(200).json(users);
   } catch (err) {
     console.error(err);
@@ -25,23 +26,32 @@ router.get("/users", async (req, res) => {
 // PUT /api/admin/users/:id - Admin chỉnh sửa thông tin toàn bộ
 router.put("/users/:id", async (req, res) => {
   const userIdToEdit = req.params.id;
-  const { fullName, role } = req.body; // Admin có thể đổi cả vai trò
+  const { fullName, role, birthday, address, className, email } = req.body;
 
   if (!fullName || !role) {
-      return res.status(400).json({ message: "Vui lòng cung cấp đầy đủ thông tin" });
+    return res.status(400).json({ message: "Thiếu dữ liệu" });
   }
 
   try {
     await queryDatabase(
-      "UPDATE Users SET full_name = ?,  role = ? WHERE id = ?",
-      [fullName, role, userIdToEdit]
+      `UPDATE Users SET 
+        full_name = ?, 
+        role = ?, 
+        birthday = ?, 
+        address = ?, 
+        class_name = ?, 
+        email = ?
+      WHERE id = ?`,
+      [fullName, role, birthday, address, className, email, userIdToEdit]
     );
+
     res.status(200).json({ message: "Cập nhật người dùng thành công" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Lỗi server" });
   }
 });
+
 
 // GET /api/admin/pending-exams - Admin xem các đề thi chờ duyệt
 router.get("/pending-exams", async (req, res) => {

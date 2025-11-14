@@ -53,15 +53,16 @@ export default function TeacherExamManager({ user }) {
   const statusColor = (status) => {
     switch (status) {
       case "approved":
-        return "bg-green-100 text-green-800";
+        return "status-approved";
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return "status-pending";
       case "rejected":
-        return "bg-red-100 text-red-800";
+        return "status-rejected";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "status-default";
     }
   };
+
 
   return (
     <div className="teacher-exam-manager">

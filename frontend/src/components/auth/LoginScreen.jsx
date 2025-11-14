@@ -100,14 +100,14 @@ export default function LoginScreen({ onLogin }) {
           </button>
         </form>
 
-        <div className="demo-info">
+        {/* <div className="demo-info">
           <p>Thông tin đăng nhập demo:</p>
           <ul>
             <li>sv_an / password (SinhVien)</li>
             <li>gv_thanh / password (GiaoVien)</li>
             <li>admin / password (Admin)</li>
           </ul>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -19,6 +19,7 @@ const pool = mysql.createPool({
     timezone: "+07:00",
     enableKeepAlive: true,
     multipleStatements: true,
+    dateStrings: true,
 });
 
 // Test kết nối
